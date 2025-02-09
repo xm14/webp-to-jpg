@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Convert WebP to JPG instantly in your browser - no file uploads, maximum privacy. Fastest image conversion tool with full confidentiality guaranteed. Perfect for web developers and digital content creators.">
+    <title>WebP to JPG Converter - Fast Browser-Based Image Conversion</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #f0f2f5;
+            padding: 2rem;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            margin-top: 2rem;
+        }
+
+        .info-text {
+            font-family: 'Poppins', sans-serif;
+            color: #4a5568;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            text-align: center;
+            margin: 1.5rem auto 0;
+            max-width: 85%;
+            padding: 0 1rem;
+        }
+
+        @media (max-width: 480px) {
+            .info-text {
+                font-size: 0.8rem;
+                max-width: 95%;
+            }
+        }
+
+        h1 {
+            color: #2d3436;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 2.2rem;
+        }
+
+        .upload-section {
+            border: 2px dashed #a0aec0;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .upload-section:hover {
+            border-color: #4299e1;
+            background: #f8fafc;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .custom-file-upload {
+            background: #4299e1;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+
+        .custom-file-upload:hover {
+            background: #3182ce;
+        }
+
+        .preview-section {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        #preview {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .convert-btn {
+            background: #48bb78;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            margin-top: 1.5rem;
+            width: 100%;
+            transition: background 0.3s ease;
+        }
+
+        .convert-btn:hover {
+            background: #38a169;
+        }
+
+        .download-section {
+            margin-top: 2rem;
+            text-align: center;
+            display: none;
+        }
+
+        .download-link {
+            color: #4299e1;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .download-link:hover {
+            color: #3182ce;
+        }
+
+        .error-message {
+            color: #e53e3e;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>WebP to JPG Converter</h1>
+        
+        <div class="upload-section">
+            <input type="file" id="fileInput" accept="image/webp">
+            <label for="fileInput" class="custom-file-upload">
+                Choose WebP File
+            </label>
+            <p style="margin-top: 1rem; color: #718096;">or drag and drop file here</p>
+        </div>
+
+        <div class="preview-section">
+            <img id="preview" alt="Preview">
+        </div>
+
+        <button class="convert-btn" onclick="convertToJpg()">Convert to JPG</button>
+
+        <p class="info-text">
+            Fastest conversion. The converter works entirely in the browser, files are not uploaded to the server 
+            and therefore not stored by us, ensuring your complete confidentiality.
+        </p>
+
+        <div class="download-section">
+            <a id="downloadLink" class="download-link" download="converted-using-webp-to-jpg.github.io.jpg">Download JPG</a>
+        </div>
+
+        <div class="error-message" id="errorMessage">
+            Please select a valid WebP file!
+        </div>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const preview = document.getElementById('preview');
+        const downloadSection = document.querySelector('.download-section');
+        const errorMessage = document.getElementById('errorMessage');
+
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file && file.type === 'image/webp') {
+                preview.style.display = 'block';
+                preview.src = URL.createObjectURL(file);
+                errorMessage.style.display = 'none';
+            } else {
+                showError();
+            }
+        });
+
+        function convertToJpg() {
+            if (!fileInput.files[0]) return showError();
+            
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            
+            img.onload = function() {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+                
+                const jpgUrl = canvas.toDataURL('image/jpeg', 0.9);
+                const downloadLink = document.getElementById('downloadLink');
+                downloadLink.href = jpgUrl;
+                downloadSection.style.display = 'block';
+            };
+            
+            img.src = URL.createObjectURL(fileInput.files[0]);
+        }
+
+        function showError() {
+            errorMessage.style.display = 'block';
+            preview.style.display = 'none';
+            downloadSection.style.display = 'none';
+        }
+
+        // Drag and drop handling
+        document.addEventListener('dragover', e => e.preventDefault());
+        document.addEventListener('drop', e => {
+            e.preventDefault();
+            if (e.dataTransfer.files[0]) {
+                fileInput.files = e.dataTransfer.files;
+                fileInput.dispatchEvent(new Event('change'));
+            }
+        });
+    </script>
+</body>
+</html>
