@@ -29,3 +29,9 @@ WebP is a modern image format that provides superior compression for images on t
 Contributions are welcome! If you have suggestions for improvements or new features, feel free to open an issue or submit a pull request.
 
 ## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+### Author
+
+Developed by [Your Name](https://github.com/xm14).
