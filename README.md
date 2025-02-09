@@ -34,4 +34,5 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ### Author
 
-Developed by [Your Name](https://github.com/xm14).
+Developed by [marat ruby](https://github.com/xm14)
+Connect with me on Telegram: [marat_ruby](https://t.me/marat_ruby)
